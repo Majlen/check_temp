@@ -62,7 +62,7 @@ def main(argv):
                 else:
                     outData.append("\'"+nameStr+"-"+labelStr+"\'="+tempStr+"C;"+critStr+";"+maxStr+";;")
 
-    print(retMsg + "|")
+    print(retMsg + "|", end = "")
     for data in outData:
         print(data, end = " ")
 
