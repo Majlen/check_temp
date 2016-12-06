@@ -60,9 +60,9 @@ def main(argv):
             else:
                 outData.append("\'"+nameStr+"-"+labelStr+"\'="+tempStr+"C;"+critStr+";"+maxStr+";;")
 
-    print("Reading sensors successful")
+    print("Reading sensors successful|")
     for data in outData:
-        print(data, end =" ")
+        print(data, end = " ")
 
     return ret
 
