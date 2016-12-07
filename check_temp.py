@@ -13,9 +13,11 @@ def main(argv):
         retMsg = "UNKNOWN: Cannot find hwmon class in sysfs"
     else:
         for hwmon in hwmons.iterdir():
+            #Get name
             nameP = hwmon / 'name'
             with nameP.open() as read:
-                nameStr = read.readline().strip()
+                nameStr = resolveName(read.readline().strip(), hwmon.resolve())
+
 
             for temp in hwmon.glob('./temp[0-9]_input'):
                 tempName = temp.name.split('_')[0]
@@ -67,6 +69,20 @@ def main(argv):
         print(data, end = " ")
 
     return ret
+
+def resolveName(curName, path):
+    parts = path.parts
+    #print(parts)
+
+    if (parts[3] == "virtual"):
+        return curName + "." + path.name.replace("hwmon", "")
+    elif (parts[3] == "platform"):
+        return parts[4]
+    elif (parts[3].startswith("pci")):
+        pciAddr = parts[5].split(':', 1)
+        return curName + ".pci" + pciAddr[1]
+    else:
+        return curName + ".TODO.unknown"
 
 if __name__ == "__main__":
     main(sys.argv)
