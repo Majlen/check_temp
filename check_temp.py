@@ -13,6 +13,12 @@ def main(argv):
         retMsg = "UNKNOWN: Cannot find hwmon class in sysfs"
     else:
         for hwmon in hwmons.iterdir():
+            if (not (hwmon / 'name').exists()):
+                #At least one driver (i5k_amb I am looking at you) does not put temperature data
+                #into hwmon directory and puts them into its root instead. In hwmon class, symlink
+                #called device goes to the module's root directory.
+                hwmon = hwmon / 'device'
+
             #Get name
             nameP = hwmon / 'name'
             with nameP.open() as read:
