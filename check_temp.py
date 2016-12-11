@@ -34,7 +34,7 @@ def main(argv):
                 tempStr = "%.1f" % tempF
 
                 #Get label if exists
-                labelP = temp.with_name(tempName +'_label')
+                labelP = temp.with_name(tempName + '_label')
                 if (labelP.exists()):
                     with labelP.open() as read:
                         labelStr = read.readline().strip()
@@ -42,7 +42,7 @@ def main(argv):
                     labelStr = tempName
 
                 #Get critical tempereature if exists (WARNING in Nagios)
-                critP = temp.with_name(tempName +'_crit')
+                critP = temp.with_name(tempName + '_crit')
                 if (critP.exists()):
                     with critP.open() as read:
                         critF = (int(read.readline().strip())/1000)
