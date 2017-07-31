@@ -78,7 +78,7 @@ def main(argv):
     if (sys.stdout.encoding == "UTF-8"):
         print(retMsg + "%.1f" % avg +  "°C|", end = "")
     else:
-        print(retMsg + "%.1f" % avg +  "°C|", end = "")
+        print(retMsg + "%.1f" % avg +  "C|", end = "")
     for data in outData:
         print(data, end = " ")
 
