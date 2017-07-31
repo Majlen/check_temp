@@ -6,7 +6,9 @@ from pathlib import Path
 def main(argv):
     outData = []
     ret = 0
-    retMsg = "OK: Reading sensors succesful"
+    retMsg = "OK: Average temperature is "
+    avg = 0
+    count = 0
     hwmons = Path('/sys/class/hwmon')
     if (not hwmons.exists):
         ret = 3
@@ -70,7 +72,13 @@ def main(argv):
                 else:
                     outData.append("\'"+nameStr+"-"+labelStr+"\'="+tempStr+"C;"+critStr+";"+maxStr+";;")
 
-    print(retMsg + "|", end = "")
+                avg = (avg * count + tempF) / (count + 1)
+                count = count + 1
+
+    if (sys.stdout.encoding == "UTF-8"):
+        print(retMsg + "%.1f" % avg +  "°C|", end = "")
+    else:
+        print(retMsg + "%.1f" % avg +  "°C|", end = "")
     for data in outData:
         print(data, end = " ")
 
