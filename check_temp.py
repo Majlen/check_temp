@@ -27,7 +27,7 @@ def main(argv):
                 nameStr = resolveName(read.readline().strip(), hwmon.resolve())
 
 
-            for temp in hwmon.glob('./temp[0-9]_input'):
+            for temp in hwmon.glob('./temp*_input'):
                 tempName = temp.name.split('_')[0]
 
                 #Get current temperature
