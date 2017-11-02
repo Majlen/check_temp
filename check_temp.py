@@ -44,33 +44,33 @@ def main(argv):
                     labelStr = tempName
 
                 #Get critical tempereature if exists (WARNING in Nagios)
-                critP = temp.with_name(tempName + '_crit')
-                if (critP.exists()):
-                    with critP.open() as read:
-                        critF = (int(read.readline().strip())/1000)
-                    critStr = "%.1f" % critF
-                    if (tempF > critF and ret < 1):
-                        ret = 1
-                        retMsg = "WARNING: " + nameStr + "-" + labelStr + " is higher than its threshold"
-                else:
-                    critStr = ""
-
-                #Get maximum temperature if exists (CRITICAL in Nagios)
-                maxP = temp.with_name(tempName +'_max')
+                maxP = temp.with_name(tempName + '_crit')
                 if (maxP.exists()):
                     with maxP.open() as read:
                         maxF = (int(read.readline().strip())/1000)
                     maxStr = "%.1f" % maxF
-                    if (tempF > maxF and ret < 2):
-                        retMsg = "CRITICAL: " + nameStr + "-" + labelStr + " is higher than its threshold"
-                        ret = 2
+                    if (tempF > maxF and ret < 1):
+                        ret = 1
+                        retMsg = "WARNING: " + nameStr + "-" + labelStr + " is higher than its threshold"
                 else:
                     maxStr = ""
 
-                if (sys.stdout.encoding == "UTF-8"):
-                    outData.append("\'"+nameStr+"-"+labelStr+"\'="+tempStr+"°C;"+critStr+";"+maxStr+";;")
+                #Get maximum temperature if exists (CRITICAL in Nagios)
+                critP = temp.with_name(tempName +'_max')
+                if (critP.exists()):
+                    with critP.open() as read:
+                        critF = (int(read.readline().strip())/1000)
+                    critStr = "%.1f" % critF
+                    if (tempF > critF and ret < 2):
+                        retMsg = "CRITICAL: " + nameStr + "-" + labelStr + " is higher than its threshold"
+                        ret = 2
                 else:
-                    outData.append("\'"+nameStr+"-"+labelStr+"\'="+tempStr+"C;"+critStr+";"+maxStr+";;")
+                    critStr = ""
+
+                if (sys.stdout.encoding == "UTF-8"):
+                    outData.append("\'"+nameStr+"-"+labelStr+"\'="+tempStr+"°C;"+critStr+";"+maxStr+";;"+maxStr)
+                else:
+                    outData.append("\'"+nameStr+"-"+labelStr+"\'="+tempStr+"C;"+critStr+";"+maxStr+";;"+maxStr)
 
                 avg = (avg * count + tempF) / (count + 1)
                 count = count + 1
