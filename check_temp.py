@@ -68,9 +68,10 @@ def main(argv):
                     critStr = ""
 
                 if (sys.stdout.encoding == "UTF-8"):
-                    outData.append("\'"+nameStr+"-"+labelStr+"\'="+tempStr+"°C;"+critStr+";"+maxStr+";;"+maxStr)
+
+                    outData.append("\'"+nameStr+"-"+labelStr+"\'="+tempStr+";"+critStr+";"+maxStr+";;"+maxStr)
                 else:
-                    outData.append("\'"+nameStr+"-"+labelStr+"\'="+tempStr+"C;"+critStr+";"+maxStr+";;"+maxStr)
+                    outData.append("\'"+nameStr+"-"+labelStr+"\'="+tempStr+";"+critStr+";"+maxStr+";;"+maxStr)
 
                 avg = (avg * count + tempF) / (count + 1)
                 count = count + 1
