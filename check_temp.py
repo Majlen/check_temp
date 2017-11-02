@@ -68,9 +68,9 @@ def main(argv):
                     maxStr = ""
 
                 if (sys.stdout.encoding == "UTF-8"):
-                    outData.append("\'"+nameStr+"-"+labelStr+"\'="+tempStr+"°C;"+critStr+";"+maxStr+";;")
+                    outData.append("\'"+nameStr+"-"+labelStr+"\'="+tempStr+";"+critStr+";"+maxStr+";;")
                 else:
-                    outData.append("\'"+nameStr+"-"+labelStr+"\'="+tempStr+"C;"+critStr+";"+maxStr+";;")
+                    outData.append("\'"+nameStr+"-"+labelStr+"\'="+tempStr+";"+critStr+";"+maxStr+";;")
 
                 avg = (avg * count + tempF) / (count + 1)
                 count = count + 1
