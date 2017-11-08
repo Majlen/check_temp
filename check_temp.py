@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import sys
+import sys, argparse
 from pathlib import Path
 
 def main(argv):
@@ -9,6 +9,15 @@ def main(argv):
     retMsg = "OK: Average temperature is "
     avg = 0
     count = 0
+    minTemp = "0.0"
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-m', help='minimum temperature')
+    args = (parser.parse_args())
+
+    if args.m:
+        minTemp = "%.1f" % float(args.m)
+
     hwmons = Path('/sys/class/hwmon')
     if (not hwmons.exists):
         ret = 3
@@ -53,7 +62,7 @@ def main(argv):
                     retMsg = "CRITICAL: " + nameStr + "-" + labelStr + " is higher than its threshold"
                     ret = 2
 
-                outData.append("\'"+nameStr+"-"+labelStr+"\'="+tempStr+";"+critStr+";"+maxStr+";;"+maxStr)
+                outData.append("\'"+nameStr+"-"+labelStr+"\'="+tempStr+";"+critStr+";"+maxStr+";"+minTemp+";"+maxStr)
 
                 avg = (avg * count + tempF) / (count + 1)
                 count = count + 1
