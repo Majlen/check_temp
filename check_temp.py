@@ -31,9 +31,7 @@ def main(argv):
                 tempName = temp.name.split('_')[0]
 
                 #Get current temperature
-                with temp.open() as read:
-                    tempF = (int(read.readline().strip())/1000)
-                tempStr = "%.1f" % tempF
+                (tempStr, tempF) = getTemp(temp, temp)
 
                 #Get label if exists
                 labelP = temp.with_name(tempName + '_label')
@@ -44,34 +42,18 @@ def main(argv):
                     labelStr = tempName
 
                 #Get critical tempereature if exists (WARNING in Nagios)
-                maxP = temp.with_name(tempName + '_crit')
-                if (maxP.exists()):
-                    with maxP.open() as read:
-                        maxF = (int(read.readline().strip())/1000)
-                    maxStr = "%.1f" % maxF
-                    if (tempF > maxF and ret < 1):
-                        ret = 1
-                        retMsg = "WARNING: " + nameStr + "-" + labelStr + " is higher than its threshold"
-                else:
-                    maxStr = ""
+                (maxStr, maxF) = getTemp(temp, tempName + '_crit')
+                if (tempF > maxF and ret < 1):
+                    retMsg = "WARNING: " + nameStr + "-" + labelStr + " is higher than its threshold"
+                    ret = 1
 
                 #Get maximum temperature if exists (CRITICAL in Nagios)
-                critP = temp.with_name(tempName +'_max')
-                if (critP.exists()):
-                    with critP.open() as read:
-                        critF = (int(read.readline().strip())/1000)
-                    critStr = "%.1f" % critF
-                    if (tempF > critF and ret < 2):
-                        retMsg = "CRITICAL: " + nameStr + "-" + labelStr + " is higher than its threshold"
-                        ret = 2
-                else:
-                    critStr = ""
+                (critStr, critF) = getTemp(temp, tempName + '_max')
+                if (tempF > critF and ret < 2):
+                    retMsg = "CRITICAL: " + nameStr + "-" + labelStr + " is higher than its threshold"
+                    ret = 2
 
-                if (sys.stdout.encoding == "UTF-8"):
-
-                    outData.append("\'"+nameStr+"-"+labelStr+"\'="+tempStr+";"+critStr+";"+maxStr+";;"+maxStr)
-                else:
-                    outData.append("\'"+nameStr+"-"+labelStr+"\'="+tempStr+";"+critStr+";"+maxStr+";;"+maxStr)
+                outData.append("\'"+nameStr+"-"+labelStr+"\'="+tempStr+";"+critStr+";"+maxStr+";;"+maxStr)
 
                 avg = (avg * count + tempF) / (count + 1)
                 count = count + 1
@@ -98,6 +80,21 @@ def resolveName(curName, path):
         return curName + ".pci" + pciAddr[1]
     else:
         return curName + ".TODO.unknown"
+
+def getTemp(curPath, tempName):
+    if (curPath != tempName):
+        tempPath = curPath.with_name(tempName)
+    else:
+        tempPath = curPath
+
+    if (tempPath.exists()):
+        with tempPath.open() as read:
+            tempFloat = (int(read.readline().strip())/1000)
+        tempString = "%.1f" % tempFloat
+    else:
+        tempString = ""
+        tempFloat = 0
+    return (tempString, tempFloat)
 
 if __name__ == "__main__":
     main(sys.argv)
