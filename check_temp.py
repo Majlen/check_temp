@@ -19,9 +19,9 @@ def main(argv):
         minTemp = "%.1f" % float(args.m)
 
     hwmons = Path('/sys/class/hwmon')
-    if (not hwmons.exists):
-        ret = 3
-        retMsg = "UNKNOWN: Cannot find hwmon class in sysfs"
+    if (not hwmons.exists()):
+        print("UNKNOWN: Cannot find hwmon class in sysfs")
+        return 3
     else:
         for hwmon in hwmons.iterdir():
             if (not (hwmon / 'name').exists()):
