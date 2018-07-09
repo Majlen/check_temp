@@ -52,14 +52,14 @@ def main(argv):
 
                 #Get critical tempereature if exists (WARNING in Nagios)
                 (maxStr, maxF) = getTemp(temp, tempName + '_crit')
-                if (tempF > maxF and ret < 1):
-                    retMsg = "WARNING: " + nameStr + "-" + labelStr + " is higher than its threshold"
+                if (maxF > 0 and tempF > maxF and ret < 1):
+                    retMsg = "WARNING: " + nameStr + "-" + labelStr + " is higher than its threshold "
                     ret = 1
 
                 #Get maximum temperature if exists (CRITICAL in Nagios)
                 (critStr, critF) = getTemp(temp, tempName + '_max')
-                if (tempF > critF and ret < 2):
-                    retMsg = "CRITICAL: " + nameStr + "-" + labelStr + " is higher than its threshold"
+                if (critF > 0 and tempF > critF and ret < 2):
+                    retMsg = "CRITICAL: " + nameStr + "-" + labelStr + " is higher than its threshold "
                     ret = 2
 
                 outData.append("\'"+nameStr+"-"+labelStr+"\'="+tempStr+";"+critStr+";"+maxStr+";"+minTemp+";"+maxStr)
@@ -74,7 +74,7 @@ def main(argv):
     for data in outData:
         print(data, end = " ")
 
-    return ret
+    sys.exit(ret)
 
 def resolveName(curName, path):
     parts = path.parts
