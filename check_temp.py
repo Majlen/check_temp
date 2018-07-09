@@ -74,7 +74,7 @@ def main(argv):
     for data in outData:
         print(data, end = " ")
 
-    return ret
+    sys.exit(ret)
 
 def resolveName(curName, path):
     parts = path.parts
