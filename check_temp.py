@@ -14,7 +14,6 @@ def main(argv):
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-m', help='minimum temperature')
-    parser.add_argument('--debug', help='print debug',default=False)
     args = (parser.parse_args())
 
     if args.m:
