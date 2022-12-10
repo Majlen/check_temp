@@ -11,6 +11,7 @@ def main(argv):
     count = 0
     minTemp = "0.0"
 
+
     parser = argparse.ArgumentParser()
     parser.add_argument('-m', help='minimum temperature')
     args = (parser.parse_args())
@@ -41,6 +42,10 @@ def main(argv):
 
                 #Get current temperature
                 (tempStr, tempF) = getTemp(temp, temp)
+                
+                #skip zero values
+                if not tempStr:
+                    continue
 
                 #Get label if exists
                 labelP = temp.with_name(tempName + '_label')
@@ -85,7 +90,10 @@ def resolveName(curName, path):
     elif (parts[3] == "platform"):
         return parts[4]
     elif (parts[3].startswith("pci")):
-        pciAddr = parts[5].split(':', 1)
+        if 'usb' in parts[5]:
+            pciAddr = parts[5]
+        else:
+            pciAddr = parts[5].split(':', 1)
         return curName + ".pci" + pciAddr[1]
     else:
         return curName + ".TODO.unknown"
@@ -96,13 +104,18 @@ def getTemp(curPath, tempName):
     else:
         tempPath = curPath
 
+    tempString = ""
+    tempFloat = 0
     if (tempPath.exists()):
         with tempPath.open() as read:
-            tempFloat = (int(read.readline().strip())/1000)
+            try:
+                tempFloat = (int(read.readline().strip())/1000)
+            except OSError as e:
+                    #print("Sensor {} has no value {}".format(tempPath,e))
+                    return (False,float(0))
+
         tempString = "%.1f" % tempFloat
-    else:
-        tempString = ""
-        tempFloat = 0
+
     return (tempString, tempFloat)
 
 if __name__ == "__main__":
